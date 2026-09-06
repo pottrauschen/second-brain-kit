@@ -163,13 +163,13 @@ Reihenfolge und Pfade. `<BRAIN>` und `<PYTHON>` beim Schreiben ersetzen.
 | `<BRAIN>/log.md` | append-only Log |
 | `<BRAIN>/maps/index.md` | Router: Projekte, Themen, System |
 | `<BRAIN>/system/schema.md` | Seitentypen, Frontmatter, Regeln |
-| `<BRAIN>/wiki/topics/anleitung.md` | Benutzung in fuenf Minuten |
-| `<BRAIN>/wiki/topics/projekt-doku-standard.md` | wohin md-Dateien in Projekten gehoeren |
+| `<BRAIN>/wiki/topics/anleitung.md` | Benutzung in fünf Minuten |
+| `<BRAIN>/wiki/topics/projekt-doku-standard.md` | wohin md-Dateien in Projekten gehören |
 | `<BRAIN>/system/scripts/brain_index.py` | erzeugt system/generated/catalog.md |
-| `<BRAIN>/system/scripts/brain_lint.py` | Integritaet: Frontmatter, Links, Katalog, raw-Hashes |
-| `<BRAIN>/system/scripts/brain_doku_check.py` | prueft ein Projekt-Repo gegen den Doku-Standard |
-| `<BRAIN>/AGENTS.md` | die zwei Ablaeufe im Wortlaut, fuer alle Werkzeuge |
-| `~/.claude/CLAUDE.md` (anhaengen) | nur Claude Code: Wegweiser |
+| `<BRAIN>/system/scripts/brain_lint.py` | Integrität: Frontmatter, Links, Katalog, raw-Hashes |
+| `<BRAIN>/system/scripts/brain_doku_check.py` | prüft ein Projekt-Repo gegen den Doku-Standard |
+| `<BRAIN>/AGENTS.md` | die zwei Abläufe im Wortlaut, für alle Werkzeuge |
+| `~/.claude/CLAUDE.md` (anhängen) | nur Claude Code: Wegweiser |
 | `~/.claude/commands/hole.md`, `handoff.md` | nur Claude Code: Slash-Befehle |
 
 ### Datei: <BRAIN>/CLAUDE.md
@@ -1035,7 +1035,7 @@ Hinweis für dich: Handoffs gehören an Meilensteine, nicht erst an das
 Token-Limit — biete sie proaktiv an, wenn Wesentliches entschieden wurde.
 ````
 
-### Nur Claude Code: Abschnitt fuer ~/.claude/CLAUDE.md (anhaengen)
+### Nur Claude Code: Abschnitt für ~/.claude/CLAUDE.md (anhängen)
 
 Pfad: `~/.claude/CLAUDE.md`
 

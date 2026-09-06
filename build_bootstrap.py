@@ -60,16 +60,16 @@ def main():
         "log.md": "append-only Log",
         "maps/index.md": "Router: Projekte, Themen, System",
         "system/schema.md": "Seitentypen, Frontmatter, Regeln",
-        "wiki/topics/anleitung.md": "Benutzung in fuenf Minuten",
-        "wiki/topics/projekt-doku-standard.md": "wohin md-Dateien in Projekten gehoeren",
+        "wiki/topics/anleitung.md": "Benutzung in fünf Minuten",
+        "wiki/topics/projekt-doku-standard.md": "wohin md-Dateien in Projekten gehören",
         "system/scripts/brain_index.py": "erzeugt system/generated/catalog.md",
-        "system/scripts/brain_lint.py": "Integritaet: Frontmatter, Links, Katalog, raw-Hashes",
-        "system/scripts/brain_doku_check.py": "prueft ein Projekt-Repo gegen den Doku-Standard",
+        "system/scripts/brain_lint.py": "Integrität: Frontmatter, Links, Katalog, raw-Hashes",
+        "system/scripts/brain_doku_check.py": "prüft ein Projekt-Repo gegen den Doku-Standard",
     }
     for rel, _ in BRAIN_FILES:
         manifest.append("| `<BRAIN>/%s` | %s |\n" % (rel, purposes[rel]))
-    manifest.append("| `<BRAIN>/AGENTS.md` | die zwei Ablaeufe im Wortlaut, fuer alle Werkzeuge |\n")
-    manifest.append("| `~/.claude/CLAUDE.md` (anhaengen) | nur Claude Code: Wegweiser |\n")
+    manifest.append("| `<BRAIN>/AGENTS.md` | die zwei Abläufe im Wortlaut, für alle Werkzeuge |\n")
+    manifest.append("| `~/.claude/CLAUDE.md` (anhängen) | nur Claude Code: Wegweiser |\n")
     manifest.append("| `~/.claude/commands/hole.md`, `handoff.md` | nur Claude Code: Slash-Befehle |\n\n")
     parts.append("".join(manifest))
 
@@ -83,7 +83,7 @@ def main():
               + "\n\n## Ablauf 2: Stand sichern (Handoff)\n\n" + handoff.replace("$ARGUMENTS", "<projekt>"))
     parts.append(block("Datei: <BRAIN>/AGENTS.md", "<BRAIN>/AGENTS.md", agents, "markdown"))
 
-    parts.append(block("Nur Claude Code: Abschnitt fuer ~/.claude/CLAUDE.md (anhaengen)",
+    parts.append(block("Nur Claude Code: Abschnitt für ~/.claude/CLAUDE.md (anhängen)",
                        "~/.claude/CLAUDE.md", read("claude/CLAUDE-abschnitt.md"), "markdown"))
     parts.append(block("Nur Claude Code: ~/.claude/commands/hole.md",
                        "~/.claude/commands/hole.md", hole, "markdown"))

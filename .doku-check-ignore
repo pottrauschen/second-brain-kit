@@ -1,0 +1,7 @@
+# Vorlagen sind Bau-Input fuer build_bootstrap.py, keine Projekt-Doku;
+# ihre Namen und Orte sind durch die Zielstruktur des Brains vorgegeben
+# (Freigabe Owner 2026-09-06).
+templates/
+# Erzeugte Auslieferungsdatei; liegt bewusst im Root, damit sie sich
+# einfach weitergeben laesst (Freigabe Owner 2026-09-06).
+second-brain-bootstrap.md

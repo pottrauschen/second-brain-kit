@@ -1,0 +1,3 @@
+# Byte-treue Ablage: keine Zeilenenden-Konvertierung.
+# raw/ ist Beweismaterial, Hashes muessen ueber Checkouts stabil bleiben.
+* -text

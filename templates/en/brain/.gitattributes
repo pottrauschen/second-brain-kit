@@ -1,0 +1,3 @@
+# Byte-exact storage: no line-ending conversion.
+# raw/ is evidence; hashes must stay stable across checkouts.
+* -text

@@ -54,9 +54,12 @@ bestehende Datei, ohne sie gezeigt und gefragt zu haben.
    Remote (das Brain ist privat; ein Remote kann später kommen). Frage,
    ob das so passt. Ohne Git verliert das Brain seine Historie und der
    Handoff seinen Commit; sag das offen.
-5. **Sprache.** Die Vorlagen sind deutsch. Frage, ob das so bleiben soll.
-   Wünscht der Owner Englisch, übersetze die Vorlagen beim Schreiben
-   sinngleich; die Skripte bleiben unverändert.
+5. **Sprache.** Diese Fassung ist deutsch; es gibt eine englische
+   Schwesterdatei (`second-brain-bootstrap.en.md`) mit englischen
+   Vorlagen und englischen Skript-Meldungen. Frage, ob Deutsch passt.
+   Wünscht der Owner eine dritte Sprache, übersetze die Vorlagen beim
+   Schreiben sinngleich; die Skripte bleiben unverändert und melden dann
+   deutsch.
 6. **Erstes Projekt.** Frage nach einem Projekt für den Probelauf: Name
    in kebab-case und Pfad zum Repo. „Später" ist eine gültige Antwort.
 7. **Zusammenfassung.** Zeige alle Antworten in einer kurzen Liste
@@ -81,6 +84,7 @@ bestehende Datei, ohne sie gezeigt und gefragt zu haben.
    ├─ wiki/topics/projekt-doku-standard.md
    └─ system/
       ├─ schema.md
+      ├─ lang                   eine Zeile: de
       ├─ generated/.gitkeep
       └─ scripts/brain_index.py, brain_lint.py, brain_doku_check.py
    ```
@@ -114,10 +118,10 @@ bestehende Datei, ohne sie gezeigt und gefragt zu haben.
     - Den Block „Abschnitt für ~/.claude/CLAUDE.md" aus Teil B an die
       globale `~/.claude/CLAUDE.md` **anhängen**. Existiert die Datei,
       zeige sie und frage, bevor du anhängst; nie ersetzen.
-    - `~/.claude/commands/hole.md` und `~/.claude/commands/handoff.md`
+    - `~/.claude/commands/get.md` und `~/.claude/commands/handoff.md`
       aus Teil B schreiben (Ordner anlegen, falls nötig). Existieren dort
       schon gleichnamige Dateien: zeigen, fragen.
-    - Danach stehen `/hole <projekt>` und `/handoff` in jeder Session zur
+    - Danach stehen `/get <projekt>` und `/handoff` in jeder Session zur
       Verfügung.
 13. **Andere Werkzeuge:** `AGENTS.md` liegt bereits im Brain-Ordner
     (Schritt 9). Erkläre dem Owner die zwei Sätze, mit denen er die
@@ -163,6 +167,7 @@ Reihenfolge und Pfade. `<BRAIN>` und `<PYTHON>` beim Schreiben ersetzen.
 | `<BRAIN>/log.md` | append-only Log |
 | `<BRAIN>/maps/index.md` | Router: Projekte, Themen, System |
 | `<BRAIN>/system/schema.md` | Seitentypen, Frontmatter, Regeln |
+| `<BRAIN>/system/lang` | Sprache der Skript-Ausgaben |
 | `<BRAIN>/wiki/topics/anleitung.md` | Benutzung in fünf Minuten |
 | `<BRAIN>/wiki/topics/projekt-doku-standard.md` | wohin md-Dateien in Projekten gehören |
 | `<BRAIN>/system/scripts/brain_index.py` | erzeugt system/generated/catalog.md |
@@ -170,7 +175,7 @@ Reihenfolge und Pfade. `<BRAIN>` und `<PYTHON>` beim Schreiben ersetzen.
 | `<BRAIN>/system/scripts/brain_doku_check.py` | prüft ein Projekt-Repo gegen den Doku-Standard |
 | `<BRAIN>/AGENTS.md` | die zwei Abläufe im Wortlaut, für alle Werkzeuge |
 | `~/.claude/CLAUDE.md` (anhängen) | nur Claude Code: Wegweiser |
-| `~/.claude/commands/hole.md`, `handoff.md` | nur Claude Code: Slash-Befehle |
+| `~/.claude/commands/get.md`, `handoff.md` | nur Claude Code: Slash-Befehle |
 
 ### Datei: <BRAIN>/CLAUDE.md
 
@@ -185,7 +190,7 @@ Skripten, Git und Hashes.
 
 ## Zweck
 
-Projekt-Kontext-System für Coding-Projekte: „Kontext laden" (`/hole
+Projekt-Kontext-System für Coding-Projekte: „Kontext laden" (`/get
 <projekt>`) holt den Stand eines Projekts in eine neue Session,
 „Handoff" (`/handoff`) sichert ihn zurück. Klein laden, gezielt
 vertiefen, verdichtet zurückschreiben.
@@ -370,6 +375,14 @@ Ops: `init` · `handoff` · `ingest` · `lint` · `konflikt` · `entscheidung`
 — grep-bar mit `grep "^## \[" log.md`.
 ````
 
+### Datei: <BRAIN>/system/lang
+
+Pfad: `<BRAIN>/system/lang`
+
+````text
+de
+````
+
 ### Datei: <BRAIN>/wiki/topics/anleitung.md
 
 Pfad: `<BRAIN>/wiki/topics/anleitung.md`
@@ -391,7 +404,7 @@ sources:
 In Claude Code (beliebiger Ordner, typischerweise dein Projektordner):
 
 ```
-/hole <projektname>
+/get <projektname>
 ```
 
 In anderen Werkzeugen (Codex, Cursor, Gemini CLI, Aider …) stattdessen
@@ -534,7 +547,11 @@ Pfad: `<BRAIN>/system/scripts/brain_index.py`
 #!/usr/bin/env python3
 """Katalog-Generator: liest Frontmatter aller Wiki-/Maps-Seiten und
 schreibt system/generated/catalog.md. Deterministisch und idempotent —
-niemals von Hand editieren, immer neu generieren."""
+niemals von Hand editieren, immer neu generieren.
+
+Sprache der Ausgaben: system/lang ("de" oder "en"); fehlt die Datei,
+deutsch. / Output language: system/lang ("de" or "en"); German if the
+file is missing."""
 
 import re
 import sys
@@ -546,6 +563,34 @@ CATALOG = BRAIN / "system" / "generated" / "catalog.md"
 
 FM_KEY = re.compile(r"^([A-Za-z_][\w-]*):\s*(.*)$")
 FM_LIST_ITEM = re.compile(r"^\s+-\s+(.*)$")
+
+MSG = {
+    "de": {
+        "header": "# Katalog (generiert von brain_index.py — nie von Hand editieren)",
+        "cols": "| Pfad | Typ | Projekt | Status | Aktualisiert | Kurzbeschreibung |",
+        "updated": "catalog.md aktualisiert ({n} Seiten)",
+        "same": "catalog.md unverändert ({n} Seiten)",
+    },
+    "en": {
+        "header": "# Catalog (generated by brain_index.py — never edit by hand)",
+        "cols": "| Path | Type | Project | Status | Updated | Summary |",
+        "updated": "catalog.md updated ({n} pages)",
+        "same": "catalog.md unchanged ({n} pages)",
+    },
+}
+
+
+def lang() -> str:
+    """Sprache aus system/lang; Standard deutsch."""
+    try:
+        value = (BRAIN / "system" / "lang").read_text(encoding="utf-8").strip().lower()
+    except OSError:
+        return "de"
+    return "en" if value.startswith("en") else "de"
+
+
+def t(key: str, **kw) -> str:
+    return MSG[lang()][key].format(**kw)
 
 
 def parse_frontmatter(text: str):
@@ -608,9 +653,9 @@ def main() -> int:
             )
     out = "\n".join(
         [
-            "# Katalog (generiert von brain_index.py — nie von Hand editieren)",
+            t("header"),
             "",
-            "| Pfad | Typ | Projekt | Status | Aktualisiert | Kurzbeschreibung |",
+            t("cols"),
             "|---|---|---|---|---|---|",
             *rows,
             "",
@@ -620,9 +665,9 @@ def main() -> int:
     old = CATALOG.read_text(encoding="utf-8") if CATALOG.exists() else None
     if old != out:
         CATALOG.write_text(out, encoding="utf-8", newline="\n")
-        print(f"catalog.md aktualisiert ({len(rows)} Seiten)")
+        print(t("updated", n=len(rows)))
     else:
-        print(f"catalog.md unverändert ({len(rows)} Seiten)")
+        print(t("same", n=len(rows)))
     return 0
 
 
@@ -641,7 +686,8 @@ Pfad: `<BRAIN>/system/scripts/brain_lint.py`
 
 Prüft: Frontmatter (wiki/), interne Links, Katalog-Abdeckung,
 Unveränderlichkeit von raw/ (Hash-Register, neue Dateien werden
-automatisch registriert — das ist der einzige Schreibvorgang)."""
+automatisch registriert — das ist der einzige Schreibvorgang).
+Sprache der Ausgaben: system/lang ("de" oder "en"), Standard deutsch."""
 
 import hashlib
 import re
@@ -659,7 +705,51 @@ WIKILINK = re.compile(r"\[\[([^\]|#]+?)(?:[|#][^\]]*)?\]\]")
 MDLINK = re.compile(r"\]\(([^)\s]+)\)")
 
 sys.path.insert(0, str(Path(__file__).resolve().parent))
-from brain_index import parse_frontmatter  # noqa: E402
+from brain_index import lang, parse_frontmatter  # noqa: E402
+
+MSG = {
+    "de": {
+        "fm_missing": "{rel}: Frontmatter fehlt oder ist nicht geschlossen",
+        "type_invalid": "{rel}: type '{t}' ungültig (erlaubt: {allowed})",
+        "status_invalid": "{rel}: status '{s}' ungültig (erlaubt: {allowed})",
+        "updated_invalid": "{rel}: updated '{u}' ist kein Datum (YYYY-MM-DD)",
+        "cockpit_project": "{rel}: project-cockpit ohne project-Feld",
+        "wikilink": "{rel}: Wikilink [[{target}]] nicht auflösbar",
+        "mdlink": "{rel}: Link ({target}) zeigt ins Leere",
+        "catalog_none": "catalog.md fehlt — brain_index.py noch nie gelaufen?",
+        "catalog_missing": "Katalog: {p} fehlt — brain_index.py laufen lassen",
+        "catalog_stale": "Katalog: {p} existiert nicht mehr — brain_index.py laufen lassen",
+        "raw_changed": "raw/ VERLETZT: {rel} wurde verändert (raw ist unveränderlich)",
+        "raw_new": "raw/ neu registriert: {rel}",
+        "raw_deleted": "raw/ VERLETZT: {rel} wurde gelöscht (raw ist unveränderlich)",
+        "warn": "WARNUNG  {m}",
+        "err": "FEHLER   {m}",
+        "summary": "\nLint: {e} Fehler, {w} Warnungen",
+    },
+    "en": {
+        "fm_missing": "{rel}: front matter missing or not closed",
+        "type_invalid": "{rel}: type '{t}' invalid (allowed: {allowed})",
+        "status_invalid": "{rel}: status '{s}' invalid (allowed: {allowed})",
+        "updated_invalid": "{rel}: updated '{u}' is not a date (YYYY-MM-DD)",
+        "cockpit_project": "{rel}: project-cockpit without project field",
+        "wikilink": "{rel}: wikilink [[{target}]] cannot be resolved",
+        "mdlink": "{rel}: link ({target}) points nowhere",
+        "catalog_none": "catalog.md missing — has brain_index.py ever run?",
+        "catalog_missing": "catalog: {p} missing — run brain_index.py",
+        "catalog_stale": "catalog: {p} no longer exists — run brain_index.py",
+        "raw_changed": "raw/ VIOLATED: {rel} was modified (raw is immutable)",
+        "raw_new": "raw/ newly registered: {rel}",
+        "raw_deleted": "raw/ VIOLATED: {rel} was deleted (raw is immutable)",
+        "warn": "WARNING  {m}",
+        "err": "ERROR    {m}",
+        "summary": "\nLint: {e} errors, {w} warnings",
+    },
+}
+
+
+def t(key: str, **kw) -> str:
+    return MSG[lang()][key].format(**kw)
+
 
 errors, warnings = [], []
 
@@ -684,25 +774,25 @@ def check_frontmatter():
         rel = p.relative_to(BRAIN).as_posix()
         fm, _ = parse_frontmatter(p.read_text(encoding="utf-8"))
         if fm is None:
-            err(f"{rel}: Frontmatter fehlt oder ist nicht geschlossen")
+            err(t("fm_missing", rel=rel))
             continue
-        t = fm.get("type")
-        if t not in VALID_TYPES:
-            err(f"{rel}: type '{t}' ungültig (erlaubt: {sorted(VALID_TYPES)})")
+        ty = fm.get("type")
+        if ty not in VALID_TYPES:
+            err(t("type_invalid", rel=rel, t=ty, allowed=sorted(VALID_TYPES)))
         s = fm.get("status")
         if s not in VALID_STATUS:
-            err(f"{rel}: status '{s}' ungültig (erlaubt: {sorted(VALID_STATUS)})")
+            err(t("status_invalid", rel=rel, s=s, allowed=sorted(VALID_STATUS)))
         u = fm.get("updated", "")
         if not isinstance(u, str) or not DATE.match(u):
-            err(f"{rel}: updated '{u}' ist kein Datum (YYYY-MM-DD)")
-        if t == "project-cockpit" and not fm.get("project"):
-            err(f"{rel}: project-cockpit ohne project-Feld")
+            err(t("updated_invalid", rel=rel, u=u))
+        if ty == "project-cockpit" and not fm.get("project"):
+            err(t("cockpit_project", rel=rel))
 
 
 def check_links():
     # Auflösbare Ziele: alle md unter wiki/, maps/ + Root-Dateien
     pages = list(all_md("wiki", "maps")) + [
-        p for p in (BRAIN / n for n in ("cockpit.md", "log.md", "CLAUDE.md")) if p.exists()
+        p for p in (BRAIN / n for n in ("cockpit.md", "log.md", "CLAUDE.md", "AGENTS.md")) if p.exists()
     ]
     by_stem = {p.stem for p in pages}
     rel_paths = {p.relative_to(BRAIN).as_posix() for p in pages}
@@ -719,26 +809,26 @@ def check_links():
                 or target in rel_paths
             )
             if not ok:
-                err(f"{rel}: Wikilink [[{target}]] nicht auflösbar")
+                err(t("wikilink", rel=rel, target=target))
         for m in MDLINK.finditer(text):
             target = m.group(1).strip()
             if re.match(r"^(https?:|mailto:|repo:|#)", target):
                 continue
             cand = (p.parent / target, BRAIN / target)
             if not any(c.exists() for c in cand):
-                err(f"{rel}: Link ({target}) zeigt ins Leere")
+                err(t("mdlink", rel=rel, target=target))
 
 
 def check_catalog():
     if not CATALOG.exists():
-        warn("catalog.md fehlt — brain_index.py noch nie gelaufen?")
+        warn(t("catalog_none"))
         return
     listed = set(re.findall(r"^\| (\S+\.md) \|", CATALOG.read_text(encoding="utf-8"), re.M))
     actual = {p.relative_to(BRAIN).as_posix() for p in all_md("wiki", "maps")}
     for missing in sorted(actual - listed):
-        err(f"Katalog: {missing} fehlt — brain_index.py laufen lassen")
+        err(t("catalog_missing", p=missing))
     for stale in sorted(listed - actual):
-        err(f"Katalog: {stale} existiert nicht mehr — brain_index.py laufen lassen")
+        err(t("catalog_stale", p=stale))
 
 
 def check_raw():
@@ -757,12 +847,12 @@ def check_raw():
                 current[rel] = hashlib.sha256(p.read_bytes()).hexdigest()
     for rel, digest in current.items():
         if rel in known and known[rel] != digest:
-            err(f"raw/ VERLETZT: {rel} wurde verändert (raw ist unveränderlich)")
+            err(t("raw_changed", rel=rel))
         elif rel not in known:
-            warn(f"raw/ neu registriert: {rel}")
+            warn(t("raw_new", rel=rel))
     for rel in known:
         if rel not in current:
-            err(f"raw/ VERLETZT: {rel} wurde gelöscht (raw ist unveränderlich)")
+            err(t("raw_deleted", rel=rel))
     merged = {**known, **{k: v for k, v in current.items() if k not in known}}
     HASHES.parent.mkdir(parents=True, exist_ok=True)
     out = "".join(f"{k}\t{v}\n" for k, v in sorted(merged.items()))
@@ -776,10 +866,10 @@ def main() -> int:
     check_catalog()
     check_raw()
     for w in warnings:
-        print(f"WARNUNG  {w}")
+        print(t("warn", m=w))
     for e in errors:
-        print(f"FEHLER   {e}")
-    print(f"\nLint: {len(errors)} Fehler, {len(warnings)} Warnungen")
+        print(t("err", m=e))
+    print(t("summary", e=len(errors), w=len(warnings)))
     return 1 if errors else 0
 
 
@@ -798,23 +888,66 @@ Pfad: `<BRAIN>/system/scripts/brain_doku_check.py`
 
 Aufruf: <PYTHON> brain_doku_check.py <projektordner>
 Exit 0 = konform, 1 = Verstöße. Der Befund ist verbindlich —
-/handoff legt ihn als Aufräum-Tabelle vor, das LLM interpretiert
-ihn nicht weg. Standard: wiki/topics/projekt-doku-standard.md"""
+der Handoff legt ihn als Aufräum-Tabelle vor, das LLM interpretiert
+ihn nicht weg. Standard: wiki/topics/projekt-doku-standard.md
+Sprache der Ausgaben: system/lang ("de" oder "en"), Standard deutsch."""
 
 import fnmatch
 import re
 import sys
 from pathlib import Path
 
+sys.path.insert(0, str(Path(__file__).resolve().parent))
+from brain_index import lang  # noqa: E402
+
 EXCLUDE_DIRS = {".git", ".dart_tool", ".idea", ".vscode", "node_modules",
                 "__pycache__", ".venv", "venv", "build", "dist", "target"}
 CONVENTION = {"README.md", "CHANGELOG.md", "CONTRIBUTING.md", "LICENSE.md",
-              "CLAUDE.md"}
+              "CLAUDE.md", "AGENTS.md"}
 # Namen in docs/: kebab-case Pflicht; Kategorien-Präfixe nur Empfehlung
 KEBAB = re.compile(r"^[a-z0-9][a-z0-9-]*\.md$")
 BAD_NAME = re.compile(r"(_?[vV]\d|\d{4}-\d{2}|_final|_neu|_alt|_backup|"
                       r"[A-Z]{2,})")
 MD_REF = re.compile(r"[\w./\\-]+\.md")
+
+MSG = {
+    "de": {
+        "usage": "Aufruf: brain_doku_check.py <projektordner>",
+        "no_dir": "Kein Ordner: {root}",
+        "claude_missing": "CLAUDE.md fehlt (Pflicht: Arbeitsregeln + Doc-Map)",
+        "readme_missing": "README.md fehlt (Pflicht)",
+        "place": "ORT      {rel} — gehört nach docs/ (oder ist kein erlaubter Root-/Konventionsname)",
+        "name": "NAME     {rel} — kebab-case Pflicht, keine Versionsnummern/Datumsstempel/GROSSBUCHSTABEN",
+        "docmap": "DOC-MAP  {rel} — nicht in der Doc-Map der CLAUDE.md gelistet (Waise)",
+        "docmap_dangling": "DOC-MAP  Eintrag '{ref}' zeigt auf fehlende Datei",
+        "head": "Doku-Standard-Check: {root}",
+        "checked": "{n} md-Dateien geprüft{note}\n",
+        "note": ", {k} per .doku-check-ignore ausgenommen",
+        "violation": "VERSTOSS {v}",
+        "warn": "WARNUNG  {w}",
+        "summary": "\n{v} Verstöße, {w} Warnungen",
+    },
+    "en": {
+        "usage": "Usage: brain_doku_check.py <project folder>",
+        "no_dir": "Not a folder: {root}",
+        "claude_missing": "CLAUDE.md missing (required: working rules + doc map)",
+        "readme_missing": "README.md missing (required)",
+        "place": "PLACE    {rel} — belongs in docs/ (or is not an allowed root/convention name)",
+        "name": "NAME     {rel} — kebab-case required, no version numbers/date stamps/UPPERCASE",
+        "docmap": "DOC-MAP  {rel} — not listed in the doc map of CLAUDE.md (orphan)",
+        "docmap_dangling": "DOC-MAP  entry '{ref}' points to a missing file",
+        "head": "Docs standard check: {root}",
+        "checked": "{n} md files checked{note}\n",
+        "note": ", {k} excluded via .doku-check-ignore",
+        "violation": "VIOLATION {v}",
+        "warn": "WARNING  {w}",
+        "summary": "\n{v} violations, {w} warnings",
+    },
+}
+
+
+def t(key: str, **kw) -> str:
+    return MSG[lang()][key].format(**kw)
 
 
 def find_md(root: Path):
@@ -826,11 +959,11 @@ def find_md(root: Path):
 
 def main() -> int:
     if len(sys.argv) != 2:
-        print("Aufruf: brain_doku_check.py <projektordner>")
+        print(t("usage"))
         return 2
     root = Path(sys.argv[1]).resolve()
     if not root.is_dir():
-        print(f"Kein Ordner: {root}")
+        print(t("no_dir", root=root))
         return 2
 
     # Optionale Werkstatt-Ausnahmen: .doku-check-ignore im Projektroot,
@@ -859,9 +992,9 @@ def main() -> int:
     doc_map_text = claude_md.read_text(encoding="utf-8", errors="replace") \
         if claude_md.exists() else ""
     if not claude_md.exists():
-        violations.append("CLAUDE.md fehlt (Pflicht: Arbeitsregeln + Doc-Map)")
+        violations.append(t("claude_missing"))
     if not (root / "README.md").exists():
-        violations.append("README.md fehlt (Pflicht)")
+        violations.append(t("readme_missing"))
 
     listed = set()
     for m in MD_REF.finditer(doc_map_text):
@@ -881,38 +1014,34 @@ def main() -> int:
             or (len(parts) >= 2 and name == "README.md")
         )
         if not ok_ort:
-            violations.append(f"ORT      {rel} — gehört nach docs/ "
-                              f"(oder ist kein erlaubter Root-/Konventionsname)")
+            violations.append(t("place", rel=rel))
             continue  # Namens-Check für falsch liegende Dateien sinnlos
 
         # --- Namen (nur docs/) ---
         if parts[0] == "docs" and len(parts) == 2:
             if not KEBAB.match(name) or BAD_NAME.search(name):
-                violations.append(f"NAME     {rel} — kebab-case Pflicht, "
-                                  f"keine Versionsnummern/Datumsstempel/"
-                                  f"GROSSBUCHSTABEN")
+                violations.append(t("name", rel=rel))
 
         # --- Doc-Map ---
         if name != "CLAUDE.md" and doc_map_text:
             if rel not in listed and name not in listed:
-                violations.append(f"DOC-MAP  {rel} — nicht in der Doc-Map "
-                                  f"der CLAUDE.md gelistet (Waise)")
+                violations.append(t("docmap", rel=rel))
 
     # Doc-Map-Einträge, deren Datei fehlt (auch ignorierte zählen als existent)
     existing = {p.relative_to(root).as_posix() for p in all_files} | \
                {p.name for p in all_files}
     for ref in sorted(listed):
         if "/" in ref and ref not in existing and not (root / ref).exists():
-            warnings_.append(f"DOC-MAP  Eintrag '{ref}' zeigt auf fehlende Datei")
+            warnings_.append(t("docmap_dangling", ref=ref))
 
-    print(f"Doku-Standard-Check: {root}")
-    note = f", {skipped} per .doku-check-ignore ausgenommen" if skipped else ""
-    print(f"{len(files)} md-Dateien geprüft{note}\n")
+    print(t("head", root=root))
+    note = t("note", k=skipped) if skipped else ""
+    print(t("checked", n=len(files), note=note))
     for v in violations:
-        print(f"VERSTOSS {v}")
+        print(t("violation", v=v))
     for w in warnings_:
-        print(f"WARNUNG  {w}")
-    print(f"\n{len(violations)} Verstöße, {len(warnings_)} Warnungen")
+        print(t("warn", w=w))
+    print(t("summary", v=len(violations), w=len(warnings_)))
     return 1 if violations else 0
 
 
@@ -1045,12 +1174,12 @@ Pfad: `~/.claude/CLAUDE.md`
 Das Second Brain (Projekt-Kontext-System) liegt unter `<BRAIN>`.
 Zwei Befehle:
 
-- `/hole <projekt>` — Kontext laden; bei unbekanntem Projekt bietet der
+- `/get <projekt>` — Kontext laden; bei unbekanntem Projekt bietet der
   Befehl das Onboarding an
 - `/handoff` — Session-Stand ins Brain sichern
 
 Beginnt der Owner Projektarbeit ohne geladenen Kontext, weise **einmal**
-kurz auf `/hole` hin (kein Zwang, kein Banner). Bei Meilensteinen
+kurz auf `/get` hin (kein Zwang, kein Banner). Bei Meilensteinen
 `/handoff` anbieten. Anleitung: `<BRAIN>/wiki/topics/anleitung.md`
 
 Neue md-Dateien in Projekten folgen dem Doku-Standard: README und
@@ -1064,9 +1193,9 @@ Arbeitsregeln des Owners — beides gehört ins Brain (Cockpit,
 Bitte zugleich die Write-Gate-Freigabe.
 ````
 
-### Nur Claude Code: ~/.claude/commands/hole.md
+### Nur Claude Code: ~/.claude/commands/get.md
 
-Pfad: `~/.claude/commands/hole.md`
+Pfad: `~/.claude/commands/get.md`
 
 ````markdown
 Lade Projektkontext aus dem Second Brain (`<BRAIN>`).

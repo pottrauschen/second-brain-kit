@@ -6,7 +6,7 @@ Skripten, Git und Hashes.
 
 ## Zweck
 
-Projekt-Kontext-System für Coding-Projekte: „Kontext laden" (`/hole
+Projekt-Kontext-System für Coding-Projekte: „Kontext laden" (`/get
 <projekt>`) holt den Stand eines Projekts in eine neue Session,
 „Handoff" (`/handoff`) sichert ihn zurück. Klein laden, gezielt
 vertiefen, verdichtet zurückschreiben.

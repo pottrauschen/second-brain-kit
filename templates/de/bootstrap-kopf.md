@@ -54,9 +54,12 @@ bestehende Datei, ohne sie gezeigt und gefragt zu haben.
    Remote (das Brain ist privat; ein Remote kann später kommen). Frage,
    ob das so passt. Ohne Git verliert das Brain seine Historie und der
    Handoff seinen Commit; sag das offen.
-5. **Sprache.** Die Vorlagen sind deutsch. Frage, ob das so bleiben soll.
-   Wünscht der Owner Englisch, übersetze die Vorlagen beim Schreiben
-   sinngleich; die Skripte bleiben unverändert.
+5. **Sprache.** Diese Fassung ist deutsch; es gibt eine englische
+   Schwesterdatei (`second-brain-bootstrap.en.md`) mit englischen
+   Vorlagen und englischen Skript-Meldungen. Frage, ob Deutsch passt.
+   Wünscht der Owner eine dritte Sprache, übersetze die Vorlagen beim
+   Schreiben sinngleich; die Skripte bleiben unverändert und melden dann
+   deutsch.
 6. **Erstes Projekt.** Frage nach einem Projekt für den Probelauf: Name
    in kebab-case und Pfad zum Repo. „Später" ist eine gültige Antwort.
 7. **Zusammenfassung.** Zeige alle Antworten in einer kurzen Liste
@@ -81,6 +84,7 @@ bestehende Datei, ohne sie gezeigt und gefragt zu haben.
    ├─ wiki/topics/projekt-doku-standard.md
    └─ system/
       ├─ schema.md
+      ├─ lang                   eine Zeile: de
       ├─ generated/.gitkeep
       └─ scripts/brain_index.py, brain_lint.py, brain_doku_check.py
    ```
@@ -114,10 +118,10 @@ bestehende Datei, ohne sie gezeigt und gefragt zu haben.
     - Den Block „Abschnitt für ~/.claude/CLAUDE.md" aus Teil B an die
       globale `~/.claude/CLAUDE.md` **anhängen**. Existiert die Datei,
       zeige sie und frage, bevor du anhängst; nie ersetzen.
-    - `~/.claude/commands/hole.md` und `~/.claude/commands/handoff.md`
+    - `~/.claude/commands/get.md` und `~/.claude/commands/handoff.md`
       aus Teil B schreiben (Ordner anlegen, falls nötig). Existieren dort
       schon gleichnamige Dateien: zeigen, fragen.
-    - Danach stehen `/hole <projekt>` und `/handoff` in jeder Session zur
+    - Danach stehen `/get <projekt>` und `/handoff` in jeder Session zur
       Verfügung.
 13. **Andere Werkzeuge:** `AGENTS.md` liegt bereits im Brain-Ordner
     (Schritt 9). Erkläre dem Owner die zwei Sätze, mit denen er die

@@ -14,7 +14,7 @@ sources:
 In Claude Code (beliebiger Ordner, typischerweise dein Projektordner):
 
 ```
-/hole <projektname>
+/get <projektname>
 ```
 
 In anderen Werkzeugen (Codex, Cursor, Gemini CLI, Aider …) stattdessen

@@ -3,12 +3,12 @@
 Das Second Brain (Projekt-Kontext-System) liegt unter `<BRAIN>`.
 Zwei Befehle:
 
-- `/hole <projekt>` — Kontext laden; bei unbekanntem Projekt bietet der
+- `/get <projekt>` — Kontext laden; bei unbekanntem Projekt bietet der
   Befehl das Onboarding an
 - `/handoff` — Session-Stand ins Brain sichern
 
 Beginnt der Owner Projektarbeit ohne geladenen Kontext, weise **einmal**
-kurz auf `/hole` hin (kein Zwang, kein Banner). Bei Meilensteinen
+kurz auf `/get` hin (kein Zwang, kein Banner). Bei Meilensteinen
 `/handoff` anbieten. Anleitung: `<BRAIN>/wiki/topics/anleitung.md`
 
 Neue md-Dateien in Projekten folgen dem Doku-Standard: README und

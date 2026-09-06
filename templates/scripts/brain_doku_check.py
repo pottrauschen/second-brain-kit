@@ -3,23 +3,66 @@
 
 Aufruf: python3-64.exe brain_doku_check.py <projektordner>
 Exit 0 = konform, 1 = Verstöße. Der Befund ist verbindlich —
-/handoff legt ihn als Aufräum-Tabelle vor, das LLM interpretiert
-ihn nicht weg. Standard: wiki/topics/projekt-doku-standard.md"""
+der Handoff legt ihn als Aufräum-Tabelle vor, das LLM interpretiert
+ihn nicht weg. Standard: wiki/topics/projekt-doku-standard.md
+Sprache der Ausgaben: system/lang ("de" oder "en"), Standard deutsch."""
 
 import fnmatch
 import re
 import sys
 from pathlib import Path
 
+sys.path.insert(0, str(Path(__file__).resolve().parent))
+from brain_index import lang  # noqa: E402
+
 EXCLUDE_DIRS = {".git", ".dart_tool", ".idea", ".vscode", "node_modules",
                 "__pycache__", ".venv", "venv", "build", "dist", "target"}
 CONVENTION = {"README.md", "CHANGELOG.md", "CONTRIBUTING.md", "LICENSE.md",
-              "CLAUDE.md"}
+              "CLAUDE.md", "AGENTS.md"}
 # Namen in docs/: kebab-case Pflicht; Kategorien-Präfixe nur Empfehlung
 KEBAB = re.compile(r"^[a-z0-9][a-z0-9-]*\.md$")
 BAD_NAME = re.compile(r"(_?[vV]\d|\d{4}-\d{2}|_final|_neu|_alt|_backup|"
                       r"[A-Z]{2,})")
 MD_REF = re.compile(r"[\w./\\-]+\.md")
+
+MSG = {
+    "de": {
+        "usage": "Aufruf: brain_doku_check.py <projektordner>",
+        "no_dir": "Kein Ordner: {root}",
+        "claude_missing": "CLAUDE.md fehlt (Pflicht: Arbeitsregeln + Doc-Map)",
+        "readme_missing": "README.md fehlt (Pflicht)",
+        "place": "ORT      {rel} — gehört nach docs/ (oder ist kein erlaubter Root-/Konventionsname)",
+        "name": "NAME     {rel} — kebab-case Pflicht, keine Versionsnummern/Datumsstempel/GROSSBUCHSTABEN",
+        "docmap": "DOC-MAP  {rel} — nicht in der Doc-Map der CLAUDE.md gelistet (Waise)",
+        "docmap_dangling": "DOC-MAP  Eintrag '{ref}' zeigt auf fehlende Datei",
+        "head": "Doku-Standard-Check: {root}",
+        "checked": "{n} md-Dateien geprüft{note}\n",
+        "note": ", {k} per .doku-check-ignore ausgenommen",
+        "violation": "VERSTOSS {v}",
+        "warn": "WARNUNG  {w}",
+        "summary": "\n{v} Verstöße, {w} Warnungen",
+    },
+    "en": {
+        "usage": "Usage: brain_doku_check.py <project folder>",
+        "no_dir": "Not a folder: {root}",
+        "claude_missing": "CLAUDE.md missing (required: working rules + doc map)",
+        "readme_missing": "README.md missing (required)",
+        "place": "PLACE    {rel} — belongs in docs/ (or is not an allowed root/convention name)",
+        "name": "NAME     {rel} — kebab-case required, no version numbers/date stamps/UPPERCASE",
+        "docmap": "DOC-MAP  {rel} — not listed in the doc map of CLAUDE.md (orphan)",
+        "docmap_dangling": "DOC-MAP  entry '{ref}' points to a missing file",
+        "head": "Docs standard check: {root}",
+        "checked": "{n} md files checked{note}\n",
+        "note": ", {k} excluded via .doku-check-ignore",
+        "violation": "VIOLATION {v}",
+        "warn": "WARNING  {w}",
+        "summary": "\n{v} violations, {w} warnings",
+    },
+}
+
+
+def t(key: str, **kw) -> str:
+    return MSG[lang()][key].format(**kw)
 
 
 def find_md(root: Path):
@@ -31,11 +74,11 @@ def find_md(root: Path):
 
 def main() -> int:
     if len(sys.argv) != 2:
-        print("Aufruf: brain_doku_check.py <projektordner>")
+        print(t("usage"))
         return 2
     root = Path(sys.argv[1]).resolve()
     if not root.is_dir():
-        print(f"Kein Ordner: {root}")
+        print(t("no_dir", root=root))
         return 2
 
     # Optionale Werkstatt-Ausnahmen: .doku-check-ignore im Projektroot,
@@ -64,9 +107,9 @@ def main() -> int:
     doc_map_text = claude_md.read_text(encoding="utf-8", errors="replace") \
         if claude_md.exists() else ""
     if not claude_md.exists():
-        violations.append("CLAUDE.md fehlt (Pflicht: Arbeitsregeln + Doc-Map)")
+        violations.append(t("claude_missing"))
     if not (root / "README.md").exists():
-        violations.append("README.md fehlt (Pflicht)")
+        violations.append(t("readme_missing"))
 
     listed = set()
     for m in MD_REF.finditer(doc_map_text):
@@ -86,38 +129,34 @@ def main() -> int:
             or (len(parts) >= 2 and name == "README.md")
         )
         if not ok_ort:
-            violations.append(f"ORT      {rel} — gehört nach docs/ "
-                              f"(oder ist kein erlaubter Root-/Konventionsname)")
+            violations.append(t("place", rel=rel))
             continue  # Namens-Check für falsch liegende Dateien sinnlos
 
         # --- Namen (nur docs/) ---
         if parts[0] == "docs" and len(parts) == 2:
             if not KEBAB.match(name) or BAD_NAME.search(name):
-                violations.append(f"NAME     {rel} — kebab-case Pflicht, "
-                                  f"keine Versionsnummern/Datumsstempel/"
-                                  f"GROSSBUCHSTABEN")
+                violations.append(t("name", rel=rel))
 
         # --- Doc-Map ---
         if name != "CLAUDE.md" and doc_map_text:
             if rel not in listed and name not in listed:
-                violations.append(f"DOC-MAP  {rel} — nicht in der Doc-Map "
-                                  f"der CLAUDE.md gelistet (Waise)")
+                violations.append(t("docmap", rel=rel))
 
     # Doc-Map-Einträge, deren Datei fehlt (auch ignorierte zählen als existent)
     existing = {p.relative_to(root).as_posix() for p in all_files} | \
                {p.name for p in all_files}
     for ref in sorted(listed):
         if "/" in ref and ref not in existing and not (root / ref).exists():
-            warnings_.append(f"DOC-MAP  Eintrag '{ref}' zeigt auf fehlende Datei")
+            warnings_.append(t("docmap_dangling", ref=ref))
 
-    print(f"Doku-Standard-Check: {root}")
-    note = f", {skipped} per .doku-check-ignore ausgenommen" if skipped else ""
-    print(f"{len(files)} md-Dateien geprüft{note}\n")
+    print(t("head", root=root))
+    note = t("note", k=skipped) if skipped else ""
+    print(t("checked", n=len(files), note=note))
     for v in violations:
-        print(f"VERSTOSS {v}")
+        print(t("violation", v=v))
     for w in warnings_:
-        print(f"WARNUNG  {w}")
-    print(f"\n{len(violations)} Verstöße, {len(warnings_)} Warnungen")
+        print(t("warn", w=w))
+    print(t("summary", v=len(violations), w=len(warnings_)))
     return 1 if violations else 0
 
 

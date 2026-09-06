@@ -14,14 +14,14 @@ bearbeitet. Projektkontext im Second Brain: `/hole second-brain-kit`.
 | `README.md` | Zweck, Benutzung, Aufbau, Herkunft der Vorlagen |
 | `second-brain-bootstrap.de.md`, `second-brain-bootstrap.en.md` | Erzeugte Ergebnisse (Teil A Anleitung, Teil B Dateien) |
 | `templates/de/bootstrap-kopf.md`, `templates/en/bootstrap-kopf.md` | Teil A: Gespräch A.1, Anlegen A.2, Werkzeug A.3, Abnahme A.4, Regeln A.5 |
-| `templates/<sprache>/brain/CLAUDE.md` | Verfassung des Brains |
-| `templates/<sprache>/brain/system/schema.md` | Seitentypen, Frontmatter, Regeln |
+| `templates/de/brain/CLAUDE.md`, `templates/en/brain/CLAUDE.md` | Verfassung des Brains |
+| `templates/de/brain/system/schema.md`, `templates/en/brain/system/schema.md` | Seitentypen, Frontmatter, Regeln |
 | `templates/de/brain/wiki/topics/anleitung.md`, `templates/en/brain/wiki/topics/guide.md` | Benutzungsanleitung |
 | `templates/de/brain/wiki/topics/projekt-doku-standard.md`, `templates/en/brain/wiki/topics/project-docs-standard.md` | Doku-Standard für Projekte |
-| `templates/<sprache>/brain/maps/index.md`, `log.md`, `.gitattributes` | Router, Log-Kopf, Git-Attribute |
-| `templates/<sprache>/brain/AGENTS-kopf.md` | Einleitung der AGENTS.md; die Abläufe hängt das Bau-Skript an |
-| `templates/<sprache>/ablaeufe/get.md`, `handoff.md` | Die zwei Abläufe mit `$ARGUMENTS` (Claude Code) bzw. `<projekt>`/`<project>` (AGENTS.md) |
-| `templates/<sprache>/claude/CLAUDE-abschnitt.md` | Abschnitt für die globale CLAUDE.md von Claude Code |
+| `templates/de/brain/maps/index.md`, `templates/en/brain/maps/index.md`, dazu je `log.md` und `.gitattributes` | Router, Log-Kopf, Git-Attribute |
+| `templates/de/brain/AGENTS-kopf.md`, `templates/en/brain/AGENTS-kopf.md` | Einleitung der AGENTS.md; die Abläufe hängt das Bau-Skript an |
+| `templates/de/ablaeufe/get.md`, `templates/de/ablaeufe/handoff.md`, `templates/en/ablaeufe/get.md`, `templates/en/ablaeufe/handoff.md` | Die zwei Abläufe mit `$ARGUMENTS` (Claude Code) bzw. `<projekt>`/`<project>` (AGENTS.md) |
+| `templates/de/claude/CLAUDE-abschnitt.md`, `templates/en/claude/CLAUDE-abschnitt.md` | Abschnitt für die globale CLAUDE.md von Claude Code |
 | `templates/scripts/*.py` | brain_index, brain_lint, brain_doku_check; zweisprachig über `system/lang` |
 
 ## Arbeitsregeln

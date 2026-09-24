@@ -11,7 +11,7 @@ bearbeitet. Projektkontext im Second Brain: `/hole second-brain-kit`.
 
 | Datei | Inhalt |
 |---|---|
-| `README.md` | Zweck, Benutzung, Aufbau, Herkunft der Vorlagen |
+| `README.md` | Zweck, Benutzung, Einrichten je Werkzeug, Aufbau, Herkunft der Vorlagen |
 | `second-brain-bootstrap.de.md`, `second-brain-bootstrap.en.md` | Erzeugte Ergebnisse (Teil A Anleitung, Teil B Dateien) |
 | `templates/de/bootstrap-kopf.md`, `templates/en/bootstrap-kopf.md` | Teil A: Gespräch A.1, Anlegen A.2, Werkzeug A.3, Abnahme A.4, Regeln A.5 |
 | `templates/de/brain/CLAUDE.md`, `templates/en/brain/CLAUDE.md` | Verfassung des Brains |

@@ -23,6 +23,7 @@ bearbeitet. Projektkontext im Second Brain: `/hole second-brain-kit`.
 | `templates/de/ablaeufe/get.md`, `templates/de/ablaeufe/handoff.md`, `templates/en/ablaeufe/get.md`, `templates/en/ablaeufe/handoff.md` | Die zwei Abläufe mit `$ARGUMENTS` (Claude Code) bzw. `<projekt>`/`<project>` (AGENTS.md) |
 | `templates/de/claude/CLAUDE-abschnitt.md`, `templates/en/claude/CLAUDE-abschnitt.md` | Abschnitt für die globale CLAUDE.md von Claude Code |
 | `templates/scripts/*.py` | brain_index, brain_lint, brain_doku_check; zweisprachig über `system/lang` |
+| `LICENSE` | MIT |
 
 ## Arbeitsregeln
 

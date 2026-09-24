@@ -60,3 +60,7 @@ Verfassung, Schema und Themen-Seiten sind die Live-Fassungen ohne private
 Bezüge, die englischen Vorlagen sind Übersetzungen davon. Änderungen an
 den Regeln gehören zuerst ins Live-Brain und dann in beide Sprachordner,
 nicht umgekehrt.
+
+## Lizenz
+
+MIT, siehe `LICENSE`.

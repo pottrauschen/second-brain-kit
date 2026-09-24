@@ -37,8 +37,8 @@ bearbeitet. Projektkontext im Second Brain: `/hole second-brain-kit`.
   Keine absoluten Pfade eines konkreten Rechners, keine Personennamen,
   keine Bezüge auf andere Brain-Instanzen oder Leser.
 - **Skripte** liegen einmal unter `templates/scripts/` und sind identisch
-  mit denen des Live-Brains (`S:\SecondBrain\system\scripts\`); Änderungen
-  dort zuerst, dann hierher kopieren. Meldungen stehen im `MSG`-Wörterbuch
+  mit denen des Live-Brains des Autors (Pfad in `CLAUDE.local.md`);
+  Änderungen dort zuerst, dann hierher kopieren. Meldungen stehen im `MSG`-Wörterbuch
   je Sprache; die deutschen Texte bleiben wörtlich wie im Live-Brain. Die
   Skripte dürfen keine vier aufeinanderfolgenden Backticks enthalten
   (Rahmen der Bootstrap-Datei), das Bau-Skript bricht sonst ab.
